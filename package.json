@@ -1,7 +1,6 @@
 {
   "name": "bastion-react",
-  "homepage": "https://wootho.github.io/Bastion-Manager/",
-  "private": true,
+  "homepage": "https://woodtho.github.io/Bastion-Manager/",
   "version": "0.1.0",
   "type": "module",
   "scripts": {
