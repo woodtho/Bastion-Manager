@@ -99,7 +99,7 @@ export default function App() {
     <>
       <NavBar
         title="Bastion Manager"
-        subtitle="Chapter 8 • Business Dashboard"
+        subtitle="Business Dashboard"
        right={
           <div className="row">
             <span className="pill">Profile: {state.profile_id || "default"}</span>

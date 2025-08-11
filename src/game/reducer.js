@@ -52,7 +52,7 @@ export const reducer = (st, action) => {
       return { ...fresh, profile_id: keepId };
     }
     case A.APPLY_PROFILE: {
-      const { character_name, character_level, bastion_name, gold, has_walls } = action.payload;
+      const { character_name, character_level, bastion_name, gold, has_walls, defenders } = action.payload;
       // Ensure starting two free basics if none exist; refund cost after adding
       let s = {
         ...st,
@@ -60,6 +60,12 @@ export const reducer = (st, action) => {
         bastion: { ...st.bastion, name: bastion_name, gold },
         has_walls: !!has_walls
       };
+
+  // Apply defenders at top level; guard non-negative integer
+  if (Number.isInteger(defenders) && defenders >= 0) {
+    s = { ...s, defenders };
+  }
+
       if (s.basics.length === 0) {
         const cramped = spaceInfo("Cramped");
         const roomy = spaceInfo("Roomy");

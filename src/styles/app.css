@@ -21,6 +21,7 @@
   --gap: 16px;
   --gap-sm: 8px;
   --tile: 24px;                       /* floorplan tile size */
+  --touch-min: 44px;                  /* recommended min touch target */
 }
 
 /* Optional light theme (opt-in by adding .theme-light to body) */
@@ -85,6 +86,7 @@ a:hover { color: var(--accent-2); }
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  min-height: var(--touch-min);                /* touch-friendly */
   padding: 8px 12px;
   border-radius: var(--radius-sm);
   border: 1px solid var(--accent);
@@ -111,6 +113,9 @@ a:hover { color: var(--accent-2); }
 .btn.sm { padding: 6px 10px; font-size: 0.9rem; }
 .btn.lg { padding: 10px 16px; font-size: 1.05rem; }
 
+/* Full-width helper for small screens */
+.btn.block { width: 100%; }
+
 /* ---------- Pills / Badges ---------- */
 .pill {
   display: inline-block;
@@ -129,7 +134,8 @@ input, select, textarea {
   border: 1px solid var(--border);
   background: var(--surface-2);
   color: var(--text);
-  padding: 6px 8px;
+  padding: 10px 12px;                           /* larger tap area */
+  line-height: 1.3;
   outline: none;
   transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
 }
@@ -140,9 +146,13 @@ input:focus, select:focus, textarea:focus {
 
 label { display: block; font-size: 0.95rem; color: var(--muted); }
 
+/* Grouped inputs row that can wrap on mobile */
+.form-row { display: flex; gap: var(--gap); flex-wrap: wrap; }
+.form-row > * { flex: 1 1 220px; }
+
 /* ---------- Tables ---------- */
 table { width: 100%; border-collapse: collapse; }
-th, td { padding: 6px 8px; border-bottom: 1px solid var(--border); text-align: left; }
+th, td { padding: 10px 12px; border-bottom: 1px solid var(--border); text-align: left; }
 thead th {
   background: #333333;
   color: var(--accent);
@@ -152,6 +162,9 @@ thead th {
 }
 tbody tr:nth-child(even) { background: #2a2a2a; }
 tbody tr:hover { background: #333333; }
+
+/* Wrap tables on small screens without breaking layout */
+.table-wrap { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
 
 /* ---------- Alerts ---------- */
 .alert {
@@ -163,9 +176,9 @@ tbody tr:hover { background: #333333; }
 }
 
 /* ---------- Pagination (generic) ---------- */
-.pagination { display: inline-flex; gap: 6px; }
+.pagination { display: inline-flex; gap: 6px; flex-wrap: wrap; }
 .pagination a, .pagination span {
-  padding: 6px 10px; border: 1px solid var(--border); border-radius: var(--radius-sm);
+  padding: 8px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm);
   background: #333333; color: var(--accent);
 }
 .pagination a:hover, .pagination .active {
@@ -174,14 +187,19 @@ tbody tr:hover { background: #333333; }
 }
 
 /* ---------- Floorplan (SVG tiles) ---------- */
+svg { max-width: 100%; height: auto; }          /* responsive SVG */
 svg .tile { stroke: #3c4352; fill: #2a2f3a; }
 svg .tile:hover { filter: brightness(1.08); }
+
+/* Optional wrapper used by the app around the SVG */
+.floorplan-wrap { overflow: auto; border: 1px solid var(--border); border-radius: var(--radius); }
 
 /* ---------- Utilities ---------- */
 .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--muted); }
 .mt-0{margin-top:0}.mt-4{margin-top:4px}.mt-8{margin-top:8px}.mt-12{margin-top:12px}
 .mb-0{margin-bottom:0}.mb-4{margin-bottom:4px}.mb-8{margin-bottom:8px}.mb-12{margin-bottom:12px}
 .p-0{padding:0}.p-4{padding:4px}.p-8{padding:8px}.p-12{padding:12px}.p-16{padding:16px}
+.hide-sm{display:initial}.show-sm{display:none}
 
 /* ---------- Reduced Motion ---------- */
 @media (prefers-reduced-motion: reduce) {
@@ -192,7 +210,6 @@ svg .tile:hover { filter: brightness(1.08); }
 *::-webkit-scrollbar { width: 10px; height: 10px; }
 *::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 6px; }
 *::-webkit-scrollbar-track { background: var(--surface); }
-
 
 /* ---- Top bar ---- */
 .topbar {
@@ -207,11 +224,13 @@ svg .tile:hover { filter: brightness(1.08); }
 /* ---- Tabs ---- */
 .tabs {
   display: flex; gap: 8px; border-bottom: 1px solid var(--border); padding-bottom: 8px;
+  overflow-x: auto; -webkit-overflow-scrolling: touch; /* allow swipe on mobile */
 }
 .tab {
   background: #333333; color: var(--accent); border: 1px solid var(--border);
   border-radius: var(--radius-sm) var(--radius-sm) 0 0;
   padding: 8px 12px; cursor: pointer;
+  white-space: nowrap;                                 /* prevent cramped wrap */
   transition: background .2s ease, color .2s ease, border-color .2s ease, box-shadow .2s ease;
 }
 .tab:hover { background: #444444; color: var(--accent-2); border-color: var(--accent); box-shadow: 0 0 10px var(--accent); }
@@ -229,7 +248,6 @@ svg .tile:hover { filter: brightness(1.08); }
 .kpi-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
 .kpi-value { font-size: 28px; font-weight: 700; color: var(--accent-2); line-height: 1.2; }
 .kpi-hint { font-size: 12px; color: var(--muted); margin-top: 2px; }
-
 
 /* ---- App Shell (sidebar + main) ---- */
 .app-shell {
@@ -250,9 +268,7 @@ svg .tile:hover { filter: brightness(1.08); }
   padding: 12px;
 }
 
-.main {
-  min-width: 0;                       /* prevent overflow in grids */
-}
+.main { min-width: 0; }               /* prevent overflow in grids */
 
 /* ---- Sidebar content ---- */
 .sidebar-header { margin-bottom: 8px; }
@@ -274,7 +290,97 @@ svg .tile:hover { filter: brightness(1.08); }
 .timeline-actions li { margin: 2px 0; }
 .timeline-event { margin-top: 4px; border-left: 2px solid var(--accent); padding-left: 8px; }
 
-
 /* Floorplan emphasis */
 svg .room-border { stroke-width: 3; stroke: var(--accent); fill: none; }
 svg .room-label { fill: var(--accent-2); font-size: 12px; pointer-events: none; }
+
+/* ======================================================================= */
+/* ============================ RESPONSIVE =============================== */
+/* ======================================================================= */
+
+/* Large tablets / small laptops */
+@media (max-width: 1200px) {
+  .container { padding: 12px; }
+  .grid-3 { grid-template-columns: repeat(2, 1fr); }
+  .app-shell { grid-template-columns: 280px 1fr; }
+}
+
+/* Tablets */
+@media (max-width: 992px) {
+  :root { --tile: 20px; }                       /* smaller tiles for SVG-heavy views */
+  .grid-2 { grid-template-columns: 1fr; }       /* single column stacks */
+  .grid-3 { grid-template-columns: repeat(2, 1fr); }
+  .kpi-value { font-size: 24px; }
+  .app-shell { grid-template-columns: 240px 1fr; }
+  .sidebar { padding: 10px; }
+  th, td { padding: 8px 10px; }
+  .btn { padding: 10px 12px; }                  /* maintain touch target */
+}
+
+/* Phones */
+@media (max-width: 768px) {
+  :root {
+    --gap: 12px;
+    --gap-sm: 6px;
+    --tile: 18px;
+  }
+
+  .container { padding: var(--gap); }
+  .grid { gap: var(--gap); }
+  .grid-3 { grid-template-columns: 1fr; }       /* stack */
+  .row { flex-wrap: wrap; }
+
+  /* Sidebar stacks above main content */
+  .app-shell {
+    grid-template-columns: 1fr;
+  }
+  .sidebar {
+    position: static;
+    height: auto;
+    border-right: 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* Make buttons block where useful */
+  .btn.block-sm { width: 100%; }
+
+  /* Tabs as scrollable chip row */
+  .tabs { gap: 6px; padding-bottom: 6px; }
+  .tab { padding: 8px 10px; }
+
+  /* Tables scrollable */
+  table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  thead th { position: sticky; top: 0; }
+
+  /* Floorplan wrapper */
+  .floorplan-wrap { border-radius: var(--radius-sm); }
+  svg .room-label { font-size: 11px; }
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+  :root {
+    --tile: 16px;
+  }
+
+  .topbar { padding: 8px 12px; }
+  .brand-title { font-size: 18px; }
+  .brand-sub { display: none; }                 /* reduce clutter */
+
+  h1 { font-size: 1.4rem; }
+  h2 { font-size: 1.25rem; }
+  h3 { font-size: 1.15rem; }
+  .kpi-value { font-size: 22px; }
+
+  .btn { padding: 10px 12px; }
+  .btn.sm { padding: 8px 10px; }
+
+  /* Utilities */
+  .hide-sm{display:none}.show-sm{display:initial}
+}
+
+/* Landscape phones (ensure sidebar/main heights behave) */
+@media (max-height: 480px) and (max-width: 900px) {
+  .sidebar { max-height: 50vh; }
+  .main { min-height: 50vh; }
+}
