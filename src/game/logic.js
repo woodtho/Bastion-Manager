@@ -118,7 +118,9 @@ export const newState = () => ({
   _floorplan_rooms: [],                                                               // [{label,x,y,w,h}]
   _floorplan_paths: [],     
   _floorplan_walls: [] ,                                                               // [{x,y}]                                                  // cached schematic tiles
-  timeline: []   
+  timeline: [],  
+  description: "", 
+  quirk: ""
 });
 
 // Derived helper: returns true if enough wall sections are built to enclose the Bastion

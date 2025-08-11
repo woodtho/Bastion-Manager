@@ -57,7 +57,13 @@ export const reducer = (st, action) => {
       let s = {
         ...st,
         character: { name: character_name, level: character_level },
-        bastion: { ...st.bastion, name: bastion_name, gold },
+        bastion: { 
+          ...st.bastion, 
+          name: bastion_name,
+         gold,
+         description: bastion_description ?? st.bastion.description ?? "",
+         quirk: bastion_quirk ?? st.bastion.quirk ?? ""
+        },
         has_walls: !!has_walls
       };
 
